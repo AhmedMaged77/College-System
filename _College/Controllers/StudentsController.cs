@@ -1,6 +1,7 @@
 ﻿using _College.DTOs;
+using _College.Errors;
 using _College.Models;
-using Microsoft.AspNetCore.Http;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace _College.Controllers
@@ -10,28 +11,24 @@ namespace _College.Controllers
     public class StudentsController : ControllerBase
     {
         private readonly AppDBContext dbContext;
+        private readonly IMapper _mapper;
 
-        public StudentsController(AppDBContext dbContext)
+        public StudentsController(AppDBContext dbContext, IMapper mapper)
         {
             this.dbContext = dbContext;
+            _mapper = mapper;
         }
         [HttpPost]
         public IActionResult CreateStudent(CreateStudentDto dto)
         {
-            var student = new Student
-            {
-                Name = dto.Name,
-                Email = dto.Email,
-                Password = dto.Password,
-                PhoneNum = dto.PhoneNum,
-                Year = dto.Year,
-                GPA = dto. GPA,
-                DepartmentId = dto.DepartmentId,
-            };
+            var student = _mapper.Map<Student>(dto);
+
             dbContext.Add(student);
             dbContext.SaveChanges();
-            return Ok(student);
+
+            return Ok(new ApiResponse(201));
 
         }
+
     }
 }

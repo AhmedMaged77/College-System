@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace _College.Migrations
 {
     /// <inheritdoc />
-    public partial class initCreate : Migration
+    public partial class initialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -87,7 +87,7 @@ namespace _College.Migrations
                         column: x => x.DepartmentId,
                         principalTable: "Departments",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -105,40 +105,39 @@ namespace _College.Migrations
                         column: x => x.CourseId,
                         principalTable: "Courses",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_DoctorCourses_Doctors_DoctorId",
                         column: x => x.DoctorId,
                         principalTable: "Doctors",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "StudentsCourses",
                 columns: table => new
                 {
-                    SudentId = table.Column<int>(type: "int", nullable: false),
+                    StudentId = table.Column<int>(type: "int", nullable: false),
                     CourseId = table.Column<int>(type: "int", nullable: false),
-                    studentId = table.Column<int>(type: "int", nullable: false),
-                    Exam_Duration = table.Column<int>(type: "int", nullable: false),
-                    Exam_Date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Exam_Duration = table.Column<int>(type: "int", nullable: true),
+                    Exam_Date = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StudentsCourses", x => new { x.SudentId, x.CourseId });
+                    table.PrimaryKey("PK_StudentsCourses", x => new { x.StudentId, x.CourseId });
                     table.ForeignKey(
                         name: "FK_StudentsCourses_Courses_CourseId",
                         column: x => x.CourseId,
                         principalTable: "Courses",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_StudentsCourses_Students_studentId",
-                        column: x => x.studentId,
+                        name: "FK_StudentsCourses_Students_StudentId",
+                        column: x => x.StudentId,
                         principalTable: "Students",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -155,11 +154,6 @@ namespace _College.Migrations
                 name: "IX_StudentsCourses_CourseId",
                 table: "StudentsCourses",
                 column: "CourseId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StudentsCourses_studentId",
-                table: "StudentsCourses",
-                column: "studentId");
         }
 
         /// <inheritdoc />

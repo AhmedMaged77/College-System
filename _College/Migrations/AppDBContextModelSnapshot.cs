@@ -177,26 +177,21 @@ namespace _College.Migrations
 
             modelBuilder.Entity("_College.Models.StudentCourse", b =>
                 {
-                    b.Property<int>("SudentId")
+                    b.Property<int>("StudentId")
                         .HasColumnType("int");
 
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Exam_Date")
+                    b.Property<DateTime?>("Exam_Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Exam_Duration")
+                    b.Property<int?>("Exam_Duration")
                         .HasColumnType("int");
 
-                    b.Property<int>("studentId")
-                        .HasColumnType("int");
-
-                    b.HasKey("SudentId", "CourseId");
+                    b.HasKey("StudentId", "CourseId");
 
                     b.HasIndex("CourseId");
-
-                    b.HasIndex("studentId");
 
                     b.ToTable("StudentsCourses");
                 });
@@ -233,21 +228,21 @@ namespace _College.Migrations
 
             modelBuilder.Entity("_College.Models.StudentCourse", b =>
                 {
-                    b.HasOne("_College.Models.Course", "course")
+                    b.HasOne("_College.Models.Course", "Course")
                         .WithMany("StudentCourse")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("_College.Models.Student", "student")
+                    b.HasOne("_College.Models.Student", "Student")
                         .WithMany("StudentCourses")
-                        .HasForeignKey("studentId")
+                        .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("course");
+                    b.Navigation("Course");
 
-                    b.Navigation("student");
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("_College.Models.Course", b =>
