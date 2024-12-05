@@ -2,9 +2,11 @@
 
 namespace _College.Models
 {
-    public class Department : BaseEntity
+    public class Batch : BaseEntity
     {
         public string Name { get; set; }
+        public string Year { get; set; }
+        public List<Course> Courses { get; set; }
         public List<Student> Students { get; set; }
 
     }

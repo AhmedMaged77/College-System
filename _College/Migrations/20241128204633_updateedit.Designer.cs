@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using _College.Models;
 
@@ -11,9 +12,11 @@ using _College.Models;
 namespace _College.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241128204633_updateedit")]
+    partial class updateedit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,36 @@ namespace _College.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("_College.Models.Batch", b =>
+            modelBuilder.Entity("_College.Models.Course", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Hours")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastUpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Courses");
+                });
+
+            modelBuilder.Entity("_College.Models.Department", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -43,53 +75,9 @@ namespace _College.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Year")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
-                    b.ToTable("Batchs");
-                });
-
-            modelBuilder.Entity("_College.Models.Course", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BatchId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("Exam_Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("Exam_Duration")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Hours")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastUpdatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BatchId");
-
-                    b.ToTable("Courses");
+                    b.ToTable("Departments");
                 });
 
             modelBuilder.Entity("_College.Models.Doctor", b =>
@@ -149,11 +137,11 @@ namespace _College.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BatchId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("CreatedOn")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -180,22 +168,35 @@ namespace _College.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("BatchId");
+                    b.HasIndex("DepartmentId");
 
                     b.ToTable("Students");
                 });
 
-            modelBuilder.Entity("_College.Models.Course", b =>
+            modelBuilder.Entity("_College.Models.StudentCourse", b =>
                 {
-                    b.HasOne("_College.Models.Batch", "Batch")
-                        .WithMany("Courses")
-                        .HasForeignKey("BatchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
 
-                    b.Navigation("Batch");
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("Exam_Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("Exam_Duration")
+                        .HasColumnType("int");
+
+                    b.HasKey("StudentId", "CourseId");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("StudentsCourses");
                 });
 
             modelBuilder.Entity("_College.Models.DoctorCourse", b =>
@@ -219,30 +220,54 @@ namespace _College.Migrations
 
             modelBuilder.Entity("_College.Models.Student", b =>
                 {
-                    b.HasOne("_College.Models.Batch", "Batch")
+                    b.HasOne("_College.Models.Department", "Department")
                         .WithMany("Students")
-                        .HasForeignKey("BatchId")
+                        .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Batch");
+                    b.Navigation("Department");
                 });
 
-            modelBuilder.Entity("_College.Models.Batch", b =>
+            modelBuilder.Entity("_College.Models.StudentCourse", b =>
                 {
-                    b.Navigation("Courses");
+                    b.HasOne("_College.Models.Course", "Course")
+                        .WithMany("StudentCourse")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Students");
+                    b.HasOne("_College.Models.Student", "Student")
+                        .WithMany("StudentCourses")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("_College.Models.Course", b =>
                 {
                     b.Navigation("DoctorCourse");
+
+                    b.Navigation("StudentCourse");
+                });
+
+            modelBuilder.Entity("_College.Models.Department", b =>
+                {
+                    b.Navigation("Students");
                 });
 
             modelBuilder.Entity("_College.Models.Doctor", b =>
                 {
                     b.Navigation("DoctorCourse");
+                });
+
+            modelBuilder.Entity("_College.Models.Student", b =>
+                {
+                    b.Navigation("StudentCourses");
                 });
 #pragma warning restore 612, 618
         }
