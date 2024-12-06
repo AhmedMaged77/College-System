@@ -53,7 +53,7 @@ namespace _College.Controllers
             {
                 return NotFound(new ApiResponse(404));
             }
-            student = _mapper.Map<Student>(dto);
+            student = _mapper.Map(dto,student);
             _dbContext.Update(student);
             _dbContext.SaveChanges();
             return Ok(new ApiResponse(200, message: "Student updated successfully"));
