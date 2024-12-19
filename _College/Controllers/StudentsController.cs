@@ -27,6 +27,7 @@ namespace _College.Controllers
             return Ok(new ApiResponse(200, mapped_students, "Students retrived successfully"));
 
         }
+        
         [HttpGet("{BatchId}")]
         public IActionResult GetStudentInBatch(int BatchId)
         {
@@ -48,7 +49,7 @@ namespace _College.Controllers
         [HttpPut]
         public IActionResult EditStudent(UpdateStudentDto dto)
         {
-            var student = _dbContext.Students.Where(s => s.IsActive).FirstOrDefault(x => x.Id == dto.BatchId);
+            var student = _dbContext.Students.Where(s => s.IsActive).FirstOrDefault(x => x.Id == dto.Id);
             if (student == null)
             {
                 return NotFound(new ApiResponse(404));

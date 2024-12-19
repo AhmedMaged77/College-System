@@ -40,6 +40,18 @@ namespace _College.Controllers
             return Ok(new ApiResponse(201));
 
         }
+        
+        [HttpPut]
+        public IActionResult UpdateDoctor(UpdateDoctorDto dto)
+        {
+            var doctor = _dbContext.Doctors.Where(d => d.IsActive).FirstOrDefault(x => x.Id == dto.Id);
+            if (doctor == null) return NotFound(new ApiResponse(404));
+            var mapped_doctor = _mapper.Map(dto, doctor);
+            _dbContext.Update(mapped_doctor);
+            _dbContext.SaveChanges();
+            return Ok(new ApiResponse(200, message: "Doctor updated successfully"));
+
+        }
         [HttpDelete]
         public IActionResult DeleteDoctor(int id)
         {
@@ -53,6 +65,7 @@ namespace _College.Controllers
             _dbContext.SaveChanges();
             return Ok(new ApiResponse(200, message: "Doctor removed successfully"));
         }
+        
 
     }
 }

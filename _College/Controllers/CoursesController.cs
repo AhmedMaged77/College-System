@@ -27,6 +27,15 @@ namespace _College.Controllers
             return Ok(new ApiResponse(200, mapped_students, "Courses retrived successfully"));
 
         }
+        [HttpGet("GetAllExams")]
+        public IActionResult GetExams()
+        {
+            var courses = _dbContext.Courses.Where(c => c.IsActive).Where(c => c.Exam_Date != null).ToList();
+            if (courses.Count == 0) return NotFound(404);
+
+            var mapped_courses = _mapper.Map<List<GetExamsDto>>(courses);
+            return Ok(new ApiResponse(200, mapped_courses, "Exams retrived successfully"));
+        }
         [HttpPost]
         public IActionResult CreateCourse(CreateCourseDto dto)
         {
@@ -66,6 +75,22 @@ namespace _College.Controllers
             return Ok(new ApiResponse(200, message: "Exam added"));
 
         }
+        [HttpDelete("DeleteExam")]
+        public IActionResult DeleteExam(int id)
+        {
+            var course = _dbContext.Courses.FirstOrDefault(d => d.Id == id);
+            if (course == null)
+            {
+                return NotFound();
+            }
+            course.Exam_Duration = null;
+            course.Exam_Date = null;
+            _dbContext.Update(course);
+            _dbContext.SaveChanges();
+            return Ok(new ApiResponse(200, message: "Exam Deleted"));
+
+        }
+
 
     }
 }

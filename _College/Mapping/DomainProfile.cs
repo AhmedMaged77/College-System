@@ -8,12 +8,7 @@ public class DomainProfile : Profile
 {
     public DomainProfile()
     {
-      //  CreateMap<Department, GetAllDepartmentDto>()
-       //     .ForMember(dest => dest.NoOfStudents, opt => opt.MapFrom(src => src.Students.Count()));
 
-       // CreateMap<Department, GetSingleDepartmentDto>();
-       // CreateMap<CreateDepartmentDto, Department>();
-       // CreateMap<UpdateDepartmentDto, Department>();
         CreateMap<UpdateStudentDto,Student>();
         CreateMap<CreateStudentDto, Student>();
         CreateMap<Student, GetAllStudentsDto>()
@@ -28,5 +23,13 @@ public class DomainProfile : Profile
         CreateMap<Doctor, GetAllDoctorsDto>();
         CreateMap<CreateDoctorDto,Doctor>();
         CreateMap<CreateExamDto,Course>();
+        CreateMap<UpdateDoctorDto, Doctor>();
+        CreateMap<Course,GetExamsDto>();
+        CreateMap<DoctorCourseDto,DoctorCourse>();
+        CreateMap<DoctorCourse, GetDoctorCourseDto>()
+            .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.Name))
+            .ForMember(dest => dest.CourseName, opt => opt.MapFrom(src => src.Course.Title));
+       
+            
     }
 }

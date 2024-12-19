@@ -18,6 +18,7 @@ namespace _College.Models
         public DbSet<Batch> Batchs { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<Doctor> Doctors { get; set; }
+        public DbSet<Admin> Admins { get; set; }
         public DbSet<DoctorCourse> DoctorCourses { get; set; }
 
     }
